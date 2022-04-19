@@ -1,7 +1,15 @@
 {
   "expo": {
-    "name": "audiod",
-    "slug": "audiod",
+    "plugins": [
+      [
+        "expo-ads-admob",
+        {
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ]
+    ],
+    "name": "book-sound",
+    "slug": "book-sound",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,16 +25,15 @@
       "**/*"
     ],
     "ios": {
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-2587037117714078~4437486570"
+      },
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-2587037117714078~7578940646"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
