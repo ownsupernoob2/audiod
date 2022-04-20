@@ -15,23 +15,26 @@ import {
   PRIMARY_BACKGROUND_COLOR,
   PRIMARY_FONT_COLOR,
 } from '../constants/Colors';
-import { updateMedia } from '../store/actions/media';
-import { connect } from 'react-redux';
+import * as mediasActions from '../store/actions/media';
+import { useSelector } from 'react-redux';
 import { FlatList } from 'react-native-gesture-handler';
 import ChapterItem from '../components/book/ChapterItem';
 
-class BookViewScreen extends Component {
-  render() {
+const BookViewScreen  = (props, navigation) => {
     const { title, cover, audios, author, description, Runtime, Tapedby } =
-      this.props.navigation.state.params;
-    // console.log(this.props.navigation.state.params.Boxid, `- ${title}`);
-   console.log(this.props);
-   
+    props.navigation.state.params;
+    const [audio, isAudio] = useState(false);
+
+
+    const mediaLists = useSelector((state) => state.media)
+useEffect(() => {
+  console.log(mediaLists)
+}, [audio])
    return (
       <Container style={{ backgroundColor: PRIMARY_BACKGROUND_COLOR }}>
         <Header transparent iosBarStyle={'light-content'}>
           <Left>
-            <Button transparent onPress={() => this.props.navigation.pop()}>
+            <Button transparent onPress={() => props.navigation.pop()}>
               <Icon
                 name="arrow-back"
                 style={{
@@ -85,16 +88,18 @@ class BookViewScreen extends Component {
             </Text>
 
             <Button
-              onPress={() =>
-                this.props.updateMedia({
+              onPress={() => {
+                isAudio(!audio)
+                mediasActions.updateMedia({
                   info: {
                     author,
                     title,
                     cover,
                   },
-                  mediaList: audios,
                   currentlyPlaying: audios[0],
+                  mediaList: audios,
                 })
+              }
               }
               style={{
                 overflow: 'hidden',
@@ -133,7 +138,7 @@ class BookViewScreen extends Component {
       </Container>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   image: {
@@ -170,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(null, { updateMedia })(BookViewScreen);
+export default BookViewScreen;

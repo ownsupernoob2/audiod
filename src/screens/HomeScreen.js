@@ -33,7 +33,6 @@ const HomeScreen  = (props, navigation) => {
   const [error, setError] = useState();
   const [message, setMessage] = useState(null);
   const books = useSelector((state) => state.books.books);
-  const mediaLists = useSelector((state) => state.books.mediaLists)
   const dispatch = useDispatch();
 
 const loadBooks = useCallback(async () => {
