@@ -1,16 +1,6 @@
-
-
-
-
-
-
-
-
 import Book from '../../models/book';
 import { SET_BOOKS } from './types';
-
-
-
+import { TOGGLE_FAVORITE } from './types';
 
 export const fetchBook = () => {
   return async (dispatch, getState) => {
@@ -37,14 +27,13 @@ export const fetchBook = () => {
             resData[key].description,
             resData[key].audios,
             resData[key].Runtime,
-            resData[key].author,
+            resData[key].author
           )
         );
       }
       dispatch({
         type: SET_BOOKS,
         books: loadedBooks,
-        
       });
     } catch (err) {
       // send to custom analytics server
@@ -53,7 +42,9 @@ export const fetchBook = () => {
   };
 };
 
-
-
-
-
+export const toggleFavorite = (id) => {
+  return {
+    type: TOGGLE_FAVORITE, 
+    bookId: id
+  };
+};

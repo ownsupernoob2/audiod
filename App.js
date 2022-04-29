@@ -12,6 +12,8 @@ import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import BookViewScreen from './src/screens/BookViewScreen';
+import CategoriesScreen from './src/screens/CategoriesScreen';
+import FavoritesScreen from './src/screens/FavoritesScreen';
 
 import { PRIMARY_COLOR } from './src/constants/Colors';
 
@@ -47,7 +49,7 @@ function mapStateToProps({ showBottomTabs }) {
 const TabBarComponent = connect(mapStateToProps)(bottomTabNavigation);
 
 const bottomMediaPanel = (props) => {
-  return props.currentlyPlaying ? <MediaBottomSheet {...props} /> : null;
+  return props.media.currentlyPlaying ? <MediaBottomSheet {...props} /> : null;
 };
 
 function mapStateToProps1({ media }) {
@@ -60,6 +62,7 @@ const switchNavigator = createSwitchNavigator({
     {
       Home: createStackNavigator(
         {
+          Categories: CategoriesScreen,
           Home: HomeScreen,
           BookView: BookViewScreen,
         },
@@ -76,6 +79,15 @@ const switchNavigator = createSwitchNavigator({
           headerMode: 'none',
         }
       ),
+      Favorites: createStackNavigator(
+        {
+          Favorites: FavoritesScreen,
+          BookView: BookViewScreen,
+        },
+        {
+          headerMode: 'none',
+        }
+      )
       // MyBooks: MyBooksScreen,
       // Profile: createStackNavigator({
       //   Profile: ProfileScreen,
@@ -104,6 +116,9 @@ const switchNavigator = createSwitchNavigator({
             case 'Search':
               iconName = 'ios-search';
               break;
+            case 'Favorites':
+              iconName = 'ios-star';
+              break;
             case 'MyBooks':
               iconName = 'ios-book';
               break;
@@ -116,13 +131,11 @@ const switchNavigator = createSwitchNavigator({
           }
 
           if (routeName === 'Home') {
-            // Sometimes we want to add badges to some icons.
-            // You can check the implementation below.
+
           } else if (routeName === 'Settings') {
             iconName = focused ? 'ios-list-box' : 'ios-list';
           }
 
-          // You can return any component that you like here!
           return <IconComponent name={iconName} size={25} color={tintColor} />;
         },
       }),

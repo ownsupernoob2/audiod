@@ -8,15 +8,16 @@
         }
       ]
     ],
-    "name": "book-sound",
-    "slug": "book-sound",
+    "name": "Auredio",
+    "description": "Auredio is an audio book streaming app that allows you to listen to books in a variety of formats and many languages.",
+    "slug": "auredio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash_icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#161616"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -31,6 +32,11 @@
       "supportsTablet": true
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive_icon.png",
+        "backgroundColor": "#161616"
+        
+      },
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-2587037117714078~7578940646"
       }

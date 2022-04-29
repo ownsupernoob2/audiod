@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, Image, View, Slider } from 'react-native';
 import { Button, Title } from 'native-base';
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import TextTicker from "react-native-text-ticker";
+
 import {
   PRIMARY_COLOR,
   PRIMARY_FONT_COLOR,
@@ -52,8 +54,8 @@ export default (props) => {
       flipVertical={false}
       clickable={false}
     >
-      <View>{faceSize()}</View>
       <View>{backSide()}</View>
+      <View>{faceSize()}</View>
     </FlipCard>
   );
 
@@ -79,7 +81,7 @@ export default (props) => {
             ></Ionicons>
           </Button>
           <Button
-            onPress={() => setFlip(true)}
+            onPress={() => setFlip(false)}
             style={{ padding: 12, height: 35 }}
             transparent
           >
@@ -107,16 +109,21 @@ export default (props) => {
           <Image source={{ uri: cover }} style={styles.image} />
         </View>
         <View style={{ alignItems: 'center' }}>
-          <Text
-            style={{
-              fontWeight: 'bold',
+      <TextTicker
+                style={{
+                  fontWeight: 'bold',
               fontSize: 24,
               color: PRIMARY_FONT_COLOR,
-            }}
-            numberOfLines={1}
-          >
-            {title}
-          </Text>
+                }}
+                duration={5000}
+                loop
+                bounce={false}
+                repeatSpacer={50}
+                marqueeDelay={400}
+              >
+                {title}
+              </TextTicker>
+            
           <Text
             style={{ color: PRIMARY_COLOR, marginVertical: 4, fontSize: 16 }}
           >
@@ -137,7 +144,6 @@ export default (props) => {
             <Button
               transparent
               disabled={!isLoaded}
-              style={styles.controlButton}
               onPress={playPrevious}
             >
               <Ionicons
@@ -223,7 +229,7 @@ export default (props) => {
           </Button>
           <Title style={{ color: PRIMARY_FONT_COLOR }}>Chapters</Title>
           <Button
-            onPress={() => setFlip(false)}
+            onPress={() => setFlip(true)}
             style={{ padding: 6, height: 34 }}
             transparent
           >
@@ -255,11 +261,13 @@ const styles = StyleSheet.create({
     shadowRadius: 6.68,
   },
   controlButton: {
-    height: 42,
-    width: 42,
+    height: 70,
+   width: 42,
     borderRadius: 42 / 2,
     justifyContent: 'center',
     padding: 6,
+    alignItems: 'center'
+
   },
   controlIcons: {
     color: PRIMARY_FONT_COLOR,

@@ -3,15 +3,17 @@ import { Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet from 'reanimated-bottom-sheet';
-import MediaPlayScreen from './MediaPlayScreen';
-import layout from '../../constants/Layout';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
-import Spinner from '../UI/Spinner';
 import { connect } from 'react-redux';
+import TextTicker from 'react-native-text-ticker';
+
+import layout from '../../constants/Layout';
+import Spinner from '../UI/Spinner';
 import { updateMedia } from '../../store/actions/media';
 import { toggleBottomTabs } from '../../store/actions/showBottomTabs';
 import { PRIMARY_FONT_COLOR } from '../../constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
+import MediaPlayScreen from './MediaPlayScreen';
 
 const { height } = layout.window;
 class MediaBottomSheet extends React.Component {
@@ -29,8 +31,7 @@ class MediaBottomSheet extends React.Component {
     this._onPlaybackStatusUpdate = this._onPlaybackStatusUpdate.bind(this);
 
     this.bottomSheetRef = React.createRef();
-    const hello = 'hello';
-    console.log(hello);
+
   }
   /**
   @Desc
@@ -43,6 +44,8 @@ class MediaBottomSheet extends React.Component {
   ** Load new sound invoking loadNewAudio() function
   */
   async componentDidMount() {
+      this.props.toggleBottomTabs(false);
+            StatusBar.setHidden(true);
     this.audio = new Audio.Sound();
     Audio.setAudioModeAsync({
       staysActiveInBackground: true,
@@ -54,7 +57,7 @@ class MediaBottomSheet extends React.Component {
 
     this.audio.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
     await this.loadNewAudio();
-    this.audio.playAsync();
+    // this.audio.playAsync();
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -213,13 +216,8 @@ class MediaBottomSheet extends React.Component {
   };
 
   content = () => {
-    const {
-      isLoaded,
-      isPlaying,
-      isBuffering,
-      audioDuration,
-      audioPosition,
-    } = this.state;
+    const { isLoaded, isPlaying, isBuffering, audioDuration, audioPosition } =
+      this.state;
     const { media } = this.props;
     return (
       <LinearGradient
@@ -265,8 +263,7 @@ class MediaBottomSheet extends React.Component {
           <TouchableOpacity
             transparent
             onPress={() => this.bottomSheetRef.current.snapTo(0)}
-            s
-            tyle={{ flex: 1 }}
+            style={{ flex: 1 }}
           >
             <View
               style={{
@@ -289,13 +286,22 @@ class MediaBottomSheet extends React.Component {
                   }}
                   source={{ uri: info.cover }}
                 />
-                <Text
-                  style={{ fontSize: 16, color: PRIMARY_FONT_COLOR, flex: 1 }}
-                  numberOfLines={1}
+                <TextTicker
+                  duration={3000}
+                  loop
+                  bounce={false}
+                  repeatSpacer={50}
+                  marqueeDelay={500}
+                  shouldAnimateTreshold={0.5}
                 >
-                  {' '}
-                  {info.title}{' '}
-                </Text>
+                  <Text
+                    style={{ fontSize: 16, color: PRIMARY_FONT_COLOR, flex: 1 }}
+                    numberOfLines={1}
+                  >
+                    {' '}
+                    {info.title}{' '}
+                  </Text>
+                </TextTicker>
               </View>
               <View
                 style={{
@@ -342,7 +348,7 @@ class MediaBottomSheet extends React.Component {
           ref={this.bottomSheetRef}
           snapPoints={['100%', 0]}
           renderHeader={this.content}
-          initialSnap={1}
+          initialSnap={0}
         />
       </>
     );

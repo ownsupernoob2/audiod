@@ -1,28 +1,37 @@
 import {
-  FlatList,
-  View,
-  ImageBackground,
   StyleSheet,
+  FlatList,
+  Button,
   Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
   Dimensions,
-} from "react-native";
-import CategoryGridTile from "../../components/UI/CategoryGridTile";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import ImageOverlay from "react-native-image-overlay";
-import {LinearGradient} from "expo-linear-gradient";
-import MaskedView from "@react-native-community/masked-view";
+} from 'react-native';
+import { Container, Header, Content, H1, Right, Body } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-community/masked-view';
 
-import HeaderButton from "../../components/UI/HeaderButton";
-import { CATEGORIES } from "../../data/categories";
-import Colors from "../../constants/Colors";
-import { ScrollView } from "react-native-gesture-handler";
-import BookText from "../../components/UI/BookText";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import layout from '../constants/Layout';
+import CategoryGridTile from '../components/UI/CategoryGridTile';
+import {
+  PRIMARY_COLOR,
+  FADE_COLOR,
+  PRIMARY_FONT_COLOR,
+  PRIMARY_BACKGROUND_COLOR,
+} from '../constants/Colors';
+import { CATEGORIES } from '../api/categories';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-function CategoriesScreen({ navigation }) {
+
+const { width } = layout.window;
+function CategoriesScreen({ navigation, }) {
+
   function renderCategoryItem(itemData) {
     function pressHandler() {
-      navigation.navigate("BookList", {
+      navigation.navigate('BookList', {
         categoryId: itemData.item.id,
       });
     }
@@ -32,43 +41,7 @@ function CategoriesScreen({ navigation }) {
     );
   }
 
-
   return (
-    <>
-
-    <View style={{ paddingTop: 85, backgroundColor: Colors.background }}>
-   
-      <ScrollView           nestedScrollEnabled>
-        <View style={styles.imageContainer}>
-          <ImageOverlay
-            source={require("../../assets/cover/cover.jpg")}
-            height={180}
-            contentPosition="center"
-          >
-          <MaterialCommunityIcons
-            name="book-open-page-variant"
-            size={100}
-            color={Colors.primary}
-
-           />
-            <BookText
-              style={{
-                color: Colors.primary,
-                fontWeight: "bold",
-                fontSize: 21,
-                fontFamily: "ArialBold",
-              }}
-            >
-                Favorites
-            </BookText>
-          </ImageOverlay>
-        </View>
-        <View>
-    
-        </View>
-      </ScrollView>
-    </View>
-
     <Container style={{ backgroundColor: PRIMARY_BACKGROUND_COLOR }}>
         <Header
           transparent
@@ -93,21 +66,18 @@ function CategoriesScreen({ navigation }) {
         </Header>
         <Content
           style={{ paddingTop: 30 }}
-          onScroll={({ nativeEvent }) => {
-            if (isCloseToBottom(nativeEvent)) {
-              onScrollToEnd();
-            }
-          }}
+         
         >
           <Grid>
             <Row>
               <Col style={styles.listPanel}>
                 <View>
                   <View style={styles.panelHeader}>
+                    <H1 style={styles.panelTitle}>Good Morning</H1>
                     <Text
                       style={{ color: PRIMARY_FONT_COLOR, fontWeight: 'bold' }}
                     >
-                  
+                      {/* {books.length} books in total */}
                     </Text>
                   </View>
                   <View
@@ -119,22 +89,45 @@ function CategoriesScreen({ navigation }) {
                     }}
                   >
 
-                     
-      <FlatList
-          data={CATEGORIES}
-          keyExtractor={(item) => item.id}
-          renderItem={ <TouchableOpacity
-                        style={{ marginBottom: 25 }}
+                  {CATEGORIES.map((category) => (
+                      <TouchableOpacity
+                        style={{ marginBottom: 25, marginLeft: 5, marginRight: 8 }}
+                        key={category.id}
                         onPress={() =>
-                          props.navigation.navigate('BookView', {
-                            item: itemData.item.id,
-                            title: itemData.item.title,
-                            description: itemData.item.description,
-                            cover: itemData.item.cover,
-                            audios: itemData.item.audios,
-                            Runtime: itemData.item.Runtime,
+                          navigation.navigate('Home', {
+                            categoryId: category.id,
                           })
                         }
+                      >
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={category.cover}
+                          style={styles.panelImage}
+
+                        />
+                        </View>
+                        <Text numberOfLines={1} style={styles.bookTitle}>
+                          {category.title}
+                        </Text>
+                        <Text
+                          numberOfLines={1}
+                          style={{
+                            color: FADE_COLOR,
+                            marginLeft: 15,
+                            width: width / 2.7,
+                          }}
+                        >
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+{/*                     
+                  <FlatList
+        numColumns={2}
+        data={CATEGORIES}
+        keyExtractor={(item) => item.id}
+        renderItem={(itemData) =>  <TouchableOpacity
+                        style={{ marginBottom: 25 }}
+                      
                       >
                         <Image
                           source={{ uri: itemData.item.cover }}
@@ -151,71 +144,73 @@ function CategoriesScreen({ navigation }) {
                             width: width / 2.7,
                           }}
                         >
-                          {itemData.item.author}
                         </Text>
                       </TouchableOpacity>}
-          numColumns={2}
-          nestedScrollEnabled
-        />
-
+      /> */}
 
                   </View>
-                  {message && (
-                    <Text
-                      style={{
-                        color: PRIMARY_FONT_COLOR,
-                        padding: 15,
-                        backgroundColor: '#191919',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {message}
-                    </Text>
-                  )}
+               
                 </View>
               </Col>
             </Row>
           </Grid>
         </Content>
       </Container>
-    </>
   );
 }
-export const screenOptions = (navData) => {
-  return {
-    headerTitle: "Home",
-    headerLeft: () => (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Menu"
-          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-          onPress={() => {
-            navData.navigation.toggleDrawer();
-          }}
-        />
-      </HeaderButtons>
-    ),
-  };
-};
 
 const styles = StyleSheet.create({
+  headerIcon: {
+    color: '#FFF',
+  },
   imageContainer: {
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "center",
+      width: width / 1.9 - 23,
+      height: width / 1.9 - 23,
+      backgroundColor: '#292929',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+  },
+  listPanel: {
+    marginBottom: 30,
+  },
+  panelHeader: {
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    marginRight: 15,
+    // alignItems: 'center',
+    marginLeft: 15,
+    marginBottom: 15,
+  },
+  panelTitle: {
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  bookTitle: {
+    marginLeft: 15,
+    marginTop: 6,
+    width: width / 2.7,
+    color: '#FFF',
+    fontSize:  17,
+    fontWeight: 'bold',
+  },
+  panelImage: {
+    width: width / 2.3 - 23,
+    height: width / 2.3 - 23,
+    borderRadius: 6,
+    backgroundColor: '#292929',
+  },
+  panelImageRounded: {
+    height: width / 2.7,
+    width: width / 2.7,
+    marginLeft: 15,
+    borderRadius: width / 2.7 / 2,
+  },
+  centered: {
     flex: 1,
-    borderRadius: 15,
-    overflow: "hidden",
-    width: 330,
-  },
-  image: {
-    width: 250,
-    height: 159,
-    marginBottom: 35,
-    alignItems: "center",
     justifyContent: "center",
-    borderRadius: 50,
-  },
+    alignItems: "center",
+  } 
 });
 
 export default CategoriesScreen;

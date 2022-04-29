@@ -31,7 +31,7 @@ class MediaList extends Component {
                   style={styles.panelItem}
                   onPress={() => {
                     this.onMediaSelected(item);
-                    setFlip(false);
+                    setFlip(true);
                   }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
