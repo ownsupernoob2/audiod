@@ -225,7 +225,6 @@ class MediaBottomSheet extends React.Component {
         style={{
           height,
           paddingHorizontal: 15,
-          borderRadius: 20,
           shadowColor: '#000',
           shadowOffset: {
             width: 0,

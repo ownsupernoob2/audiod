@@ -1,6 +1,5 @@
 import Book from '../../models/book';
-import { SET_BOOKS } from './types';
-import { TOGGLE_FAVORITE } from './types';
+import { SET_BOOKS, TOGGLE_FAVORITE } from './types';
 
 export const fetchBook = () => {
   return async (dispatch, getState) => {
@@ -43,8 +42,5 @@ export const fetchBook = () => {
 };
 
 export const toggleFavorite = (id) => {
-  return {
-    type: TOGGLE_FAVORITE, 
-    bookId: id
-  };
+  return { type: TOGGLE_FAVORITE, bookId: id };
 };

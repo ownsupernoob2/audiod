@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, Image, View, Slider } from 'react-native';
+import { StyleSheet, Text, Image, View } from 'react-native';
 import { Button, Title } from 'native-base';
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import TextTicker from "react-native-text-ticker";
+import Slider from '@react-native-community/slider';
 
 import {
   PRIMARY_COLOR,
@@ -71,7 +72,7 @@ export default (props) => {
         >
           <Button
             onPress={() => bottomSheetRef.current.snapTo(1)}
-            style={{ padding: 12, height: 35 }}
+            style={{ padding: 12, height: 37 }}
             transparent
           >
             <Ionicons
@@ -80,17 +81,21 @@ export default (props) => {
               style={{ color: PRIMARY_FONT_COLOR }}
             ></Ionicons>
           </Button>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{color: 'rgba(255,255,255,0.3)', fontWeight: 'bold',  paddingTop:10}}> {'<--'} عرض قائمة الفصول</Text>
           <Button
             onPress={() => setFlip(false)}
             style={{ padding: 12, height: 35 }}
             transparent
           >
+          
             <Ionicons
               name="ios-list"
               size={24}
               style={{ color: PRIMARY_FONT_COLOR }}
             ></Ionicons>
           </Button>
+          </View>
         </View>
         <View
           style={{
@@ -144,6 +149,7 @@ export default (props) => {
             <Button
               transparent
               disabled={!isLoaded}
+              style={styles.controlButton}
               onPress={playPrevious}
             >
               <Ionicons
@@ -155,12 +161,12 @@ export default (props) => {
             <Button
               transparent
               onPress={onPlayPausePressed}
-              style={{ height: 70 }}
+              style={{ height: 75 }}
               disabled={!isLoaded}
             >
               <MaterialIcons
                 style={[!isLoaded && styles.disabled, styles.controlIcons]}
-                size={60}
+                size={65}
                 name={isPlaying ? 'pause-circle-filled' : 'play-circle-filled'}
               />
             </Button>
@@ -197,8 +203,7 @@ export default (props) => {
           {isBuffering && (
             <Text style={{ textAlign: 'center', color: PRIMARY_FONT_COLOR }}>
               {' '}
-              Loading...
-            </Text>
+              تحميل...</Text>
           )}
         </View>
       </View>
@@ -218,7 +223,7 @@ export default (props) => {
         >
           <Button
             onPress={() => bottomSheetRef.current.snapTo(1)}
-            style={{ padding: 6, height: 34 }}
+            style={{ padding: 6, height: 40 }}
             transparent
           >
             <Ionicons
@@ -227,7 +232,8 @@ export default (props) => {
               style={{ color: PRIMARY_FONT_COLOR }}
             ></Ionicons>
           </Button>
-          <Title style={{ color: PRIMARY_FONT_COLOR }}>Chapters</Title>
+          <Title style={{ color: PRIMARY_FONT_COLOR }}>فصول</Title>
+    
           <Button
             onPress={() => setFlip(true)}
             style={{ padding: 6, height: 34 }}
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
   },
   controlButton: {
     height: 70,
-   width: 42,
+   width: 50,
     borderRadius: 42 / 2,
     justifyContent: 'center',
     padding: 6,

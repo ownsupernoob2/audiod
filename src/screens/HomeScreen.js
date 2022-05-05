@@ -48,6 +48,28 @@ const HomeScreen = (props, navigation) => {
   const [message, setMessage] = useState(null);
   const books = useSelector((state) => state.books.books);
   const dispatch = useDispatch();
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    var hours = new Date().getHours(); //Current Hours
+    setCurrentDate(hours);
+    console.log(hours);
+    if (currentDate >= 17) {
+      setMessage('مساء الخير!');
+    } else if (currentDate >= 12.5) {
+      setMessage('طاب مسائك');
+    } else if (currentDate >= 12) {
+      setMessage('انه منتصف النهار 😎');
+    } else if (currentDate >= 7) {
+      setMessage('صباح الخير');
+    } else if (currentDate >= 21) {
+      setMessage('طاب مساؤك');
+    } else if (currentDate >= 0) {
+      setMessage('الوقت منتصف الليل 👻');
+    } else if (currentDate >= 5) {
+      setMessage('صباح جيد في الصباح الباكر');
+    }
+  }, [currentDate]);
 
   //   useEffect to load the books and also used to catch errors which is captured by the useState.
   const loadBooks = useCallback(async () => {
@@ -76,19 +98,19 @@ const HomeScreen = (props, navigation) => {
   }, [dispatch, loadBooks]);
 
   // Grabs the category ID from the navigation params
-  const catId = props.navigation.state.params.categoryId;
+  // const catId = props.navigation.state.params.categoryId;
 
   // Fill the audioBooks array with the books that match the category ID
-  const displayedBooks = books.filter((bookItem) => {
-    return bookItem.categoryIds.indexOf(catId) >= 0;
-  });
+  // const displayedBooks = books.filter((bookItem) => {
+  //   return bookItem.categoryIds.indexOf(catId) >= 0;
+  // });
 
   const numColumns = Math.ceil(Dimensions.get('window').height / 500);
 
   // Grabs the category name from the navigation params for the header.
-  const categoryTitle = CATEGORIES.find(
-    (category) => category.id === catId
-  ).title;
+  // const categoryTitle = CATEGORIES.find(
+  //   (category) => category.id === catId
+  // ).title;
 
   if (error) {
     // Checks if theirs an error. If so, displays the error message.
@@ -133,31 +155,18 @@ const HomeScreen = (props, navigation) => {
         transparent
         style={{ backgroundColor: '#191919', borderBottomWidth: 0 }}
         iosBarStyle={'light-content'}
+        androidStatusBarColor={'green'}
       >
         <Body
           style={{
-            marginLeft: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            marginLeft: '82.05%',
+            alignItems: 'flex-end',
           }}
         >
-          <Left>
-            <ButtonBase transparent onPress={() => props.navigation.pop()}>
-              <Icon
-                name="arrow-back"
-                style={{
-                  marginLeft: 5,
-                  fontSize: 26,
-                  color: PRIMARY_FONT_COLOR,
-                }}
-              />
-              <Text style={{ color: PRIMARY_FONT_COLOR }}>Browse Books</Text>
-            </ButtonBase>
-          </Left>
+          <H1 style={{ color: PRIMARY_FONT_COLOR, fontWeight: 'bold' }}>كتب</H1>
         </Body>
 
-        <Right />
+        <Left />
       </Header>
       <Content style={{ paddingTop: 30 }}>
         <Grid>
@@ -165,17 +174,17 @@ const HomeScreen = (props, navigation) => {
             <Col style={styles.listPanel}>
               <View>
                 <View style={styles.panelHeader}>
-                  <H1 style={styles.panelTitle}>{categoryTitle}</H1>
+                  <H1 style={styles.panelTitle}>{message}</H1>
                   <Text
                     style={{ color: PRIMARY_FONT_COLOR, fontWeight: 'bold' }}
                   >
-                    {displayedBooks.length} books in this category.
+                     الكتب في المجموع {books.length}
                   </Text>
                 </View>
 
                 {
                   // checks if there are books in the category
-                  displayedBooks.length == 0 ? (
+                  books.length == 0 ? (
                     <View style={styles.centered}>
                       <Text
                         style={{
@@ -184,12 +193,12 @@ const HomeScreen = (props, navigation) => {
                           textAlign: 'center',
                           fontWeight: 'bold',
                           padding: 20,
-                          paddingTop: '40%'
+                          paddingTop: '40%',
                         }}
                       >
-                        there are no books here. If you think
-                        this is a problem please check your internet connection
-                        or try again later.
+                        لا توجد كتب هنا. إذا كنت تعتقد أن هذه مشكلة يرجى التحقق
+                        من اتصال الإنترنت الخاص بك أو المحاولة مرة أخرى في وقت
+                        لاحق.
                       </Text>
                     </View>
                   ) : (
@@ -199,13 +208,14 @@ const HomeScreen = (props, navigation) => {
                         flexWrap: 'wrap',
                         marginBottom: 15,
                         flex: 1,
+                        marginHorizontal: 14,
                       }}
                     >
                       <FlatList
                         onRefresh={loadBooks}
                         refreshing={isLoading}
                         numColumns={numColumns}
-                        data={displayedBooks}
+                        data={books}
                         keyExtractor={(item) => item.id}
                         renderItem={(itemData) => (
                           <TouchableOpacity
@@ -221,42 +231,33 @@ const HomeScreen = (props, navigation) => {
                               })
                             }
                           >
+                          {console.log(itemData.item.id)}
                             <Image
                               source={{ uri: itemData.item.cover }}
                               style={styles.panelImage}
                             />
-                            <Text numberOfLines={1} style={styles.bookTitle}>
-                              {itemData.item.title}
-                            </Text>
-                            <Text
-                              numberOfLines={1}
-                              style={{
-                                color: FADE_COLOR,
-                                marginLeft: 15,
-                                width: width / 2.7,
-                              }}
-                            >
-                              {itemData.item.author}
-                            </Text>
+                            <View style={{}}>
+                              <Text numberOfLines={1} style={styles.bookTitle}>
+                                {itemData.item.title}
+                              </Text>
+                              <Text
+                                numberOfLines={1}
+                                style={{
+                                  color: FADE_COLOR,
+                                  marginLeft: 15,
+                                  width: width / 2.7,
+                                }}
+                              >
+                                {itemData.item.author}
+                              </Text>
+                            </View>
                           </TouchableOpacity>
+                      
                         )}
                       />
                     </View>
                   )
                 }
-
-                {message && (
-                  <Text
-                    style={{
-                      color: PRIMARY_FONT_COLOR,
-                      padding: 15,
-                      backgroundColor: '#191919',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {message}
-                  </Text>
-                )}
               </View>
             </Col>
           </Row>
@@ -280,6 +281,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     marginLeft: 15,
     marginBottom: 15,
+    alignItems: 'flex-end',
   },
   panelTitle: {
     fontWeight: 'bold',
@@ -294,14 +296,14 @@ const styles = StyleSheet.create({
   panelImage: {
     width: width / 2 - 23,
     height: width / 2 - 23,
-    marginLeft: 15,
+    marginRight: 15,
     borderRadius: 6,
     backgroundColor: '#191919',
   },
   panelImageRounded: {
     height: width / 2.7,
     width: width / 2.7,
-    marginLeft: 15,
+    marginRight: 15,
     borderRadius: width / 2.7 / 2,
   },
   centered: {

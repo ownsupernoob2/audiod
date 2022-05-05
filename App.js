@@ -60,28 +60,27 @@ const MediaBottomPanel = connect(mapStateToProps1)(bottomMediaPanel);
 const switchNavigator = createSwitchNavigator({
   mainFlow: createBottomTabNavigator(
     {
-      Home: createStackNavigator(
+      مسكن: createStackNavigator(
         {
-          Categories: CategoriesScreen,
-          Home: HomeScreen,
+          مسكن: HomeScreen,
           BookView: BookViewScreen,
         },
         {
           headerMode: 'none',
         }
       ),
-      Search: createStackNavigator(
+      // Search: createStackNavigator(
+      //   {
+      //     Search: SearchScreen,
+      //     BookView: BookViewScreen,
+      //   },
+      //   {
+      //     headerMode: 'none',
+      //   }
+      // ),
+      المفضلة: createStackNavigator(
         {
-          Search: SearchScreen,
-          BookView: BookViewScreen,
-        },
-        {
-          headerMode: 'none',
-        }
-      ),
-      Favorites: createStackNavigator(
-        {
-          Favorites: FavoritesScreen,
+          المفضلة: FavoritesScreen,
           BookView: BookViewScreen,
         },
         {
@@ -110,13 +109,13 @@ const switchNavigator = createSwitchNavigator({
           let iconName;
 
           switch (routeName) {
-            case 'Home':
+            case 'مسكن':
               iconName = 'ios-home';
               break;
             case 'Search':
               iconName = 'ios-search';
               break;
-            case 'Favorites':
+            case 'المفضلة':
               iconName = 'ios-star';
               break;
             case 'MyBooks':
@@ -130,7 +129,7 @@ const switchNavigator = createSwitchNavigator({
               iconName = 'ios-information-circle';
           }
 
-          if (routeName === 'Home') {
+          if (routeName === 'مسكن') {
 
           } else if (routeName === 'Settings') {
             iconName = focused ? 'ios-list-box' : 'ios-list';

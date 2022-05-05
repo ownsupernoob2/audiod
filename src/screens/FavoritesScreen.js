@@ -44,9 +44,10 @@ const FavoritesScreen = (props, navigation) => {
  
   const favBooks = useSelector((state) => state.books.favoriteBooks);
 
- 
- 
+  const numColumns = Math.ceil(Dimensions.get('window').height / 500);
 
+ 
+ 
 
 
   return (
@@ -55,20 +56,18 @@ const FavoritesScreen = (props, navigation) => {
         transparent
         style={{ backgroundColor: '#191919', borderBottomWidth: 0 }}
         iosBarStyle={'light-content'}
+        androidStatusBarColor={'green'}
       >
-        <Body
-          style={{
-            marginLeft: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
+       
+        <View style={{
+          paddingLeft: '76.5%',
+          alignItems: 'flex-end',
+          justifyContent: 'center',
+        }}>
         <H1 style={{ color: PRIMARY_FONT_COLOR, fontWeight: 'bold' }}>
-              Favorites
+        المفضلة
             </H1>
-            
-        </Body>
+            </View>
 
         <Right />
       </Header>
@@ -78,11 +77,11 @@ const FavoritesScreen = (props, navigation) => {
             <Col style={styles.listPanel}>
               <View>
                 <View style={styles.panelHeader}>
-                  {/* <H1 style={styles.panelTitle}>Lis</H1> */}
+                  <H1 style={styles.panelTitle}>كتبك المفضلة.</H1>
                   <Text
                     style={{ color: PRIMARY_FONT_COLOR, fontWeight: 'bold' }}
                   >
-                    {/* {favBooks.length} books in your favorites. */}
+                  كتب في المفضلة لديك {favBooks.length} 
                   </Text>
                 </View>
 
@@ -95,8 +94,10 @@ const FavoritesScreen = (props, navigation) => {
                         flex: 1,
                       }}
                     >
-                      <FlatList
-                        
+
+                    { !favBooks.length == 0 ? (
+                    <FlatList
+                        numColumns={numColumns}
                         data={favBooks}
                         keyExtractor={(item) => item.id}
                         renderItem={(itemData) => (
@@ -104,7 +105,7 @@ const FavoritesScreen = (props, navigation) => {
                             style={{ marginBottom: 25 }}
                             onPress={() =>
                               props.navigation.navigate('BookView', {
-                                item: itemData.item.id,
+                                bookId: itemData.item.id,
                                 title: itemData.item.title,
                                 description: itemData.item.description,
                                 cover: itemData.item.cover,
@@ -113,26 +114,43 @@ const FavoritesScreen = (props, navigation) => {
                               })
                             }
                           >
+                          {console.log(itemData.item.id)}
                             <Image
                               source={{ uri: itemData.item.cover }}
                               style={styles.panelImage}
                             />
-                            <Text numberOfLines={1} style={styles.bookTitle}>
-                              {itemData.item.title}
-                            </Text>
-                            <Text
-                              numberOfLines={1}
-                              style={{
-                                color: FADE_COLOR,
-                                marginLeft: 15,
-                                width: width / 2.7,
-                              }}
-                            >
-                              {itemData.item.author}
-                            </Text>
+                            <View style={{}}>
+                              <Text numberOfLines={1} style={styles.bookTitle}>
+                                {itemData.item.title}
+                              </Text>
+                              <Text
+                                numberOfLines={1}
+                                style={{
+                                  color: FADE_COLOR,
+                                  marginLeft: 15,
+                                  width: width / 2.7,
+                                }}
+                              >
+                                {itemData.item.author}
+                              </Text>
+                            </View>
                           </TouchableOpacity>
                         )}
                       />
+                    ) : (                    <View style={styles.centered}>
+                      <Text
+                        style={{
+                          color: '#aaa',
+                          fontSize: 14,
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          padding: 20,
+                          paddingTop: '40%',
+                        }}
+                      >
+                      لا توجد كتب في المفضلة لديك ، ابدأ في إضافة بعض!</Text>
+                    </View>)
+                    }
                     </View>
 
                 

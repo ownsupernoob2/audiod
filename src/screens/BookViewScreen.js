@@ -21,21 +21,32 @@ import {
   PRIMARY_FONT_COLOR,
 } from '../constants/Colors';
 import * as mediasActions from '../store/actions/media';
-import { toggleFavorite } from '../store/actions/books';
+import * as booksActions from '../store/actions/books';
 import ChapterItem from '../components/book/ChapterItem';
 
 const BookViewScreen = (props, navigation) => {
   // grabs the book information and puts them into a const.
-  const {bookId, title, cover, audios, author, description, Runtime, Tapedby } =
-    props.navigation.state.params;
+  const {
+    bookId,
+    title,
+    cover,
+    audios,
+    author,
+    description,
+    Runtime,
+    Tapedby,
+  } = props.navigation.state.params;
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const currentBookIsFavorite = useSelector((state) =>
+    state.books.favoriteBooks.some((book) => book.id === bookId)
+  );
 
   // gets the information from the redux store
   const mediaLists = useSelector((state) => state.media);
 
   const toggleFavoriteHandler = useCallback(() => {
-    dispatch(toggleFavorite(bookId));
+    dispatch(booksActions.toggleFavorite(bookId));
   }, [dispatch, bookId]);
 
   useEffect(async () => {
@@ -43,7 +54,7 @@ const BookViewScreen = (props, navigation) => {
     await AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917'); // Test ID, Replace with your-admob-unit-id
 
     await AdMobRewarded.requestAdAsync();
-  }, [isLoading]);
+  }, []);
 
   const handlePlay = async () => {
     // stores the ready alert message.
@@ -61,29 +72,28 @@ const BookViewScreen = (props, navigation) => {
     //   ]
     // );
 
-    
     Alert.alert(
-      'Wait!',
-      'To keep this app free please watch this ad to listen to this book. (Wait a few seconds before pressing "Okay" )',
+      'انتظر!',
+      'للحفاظ على هذا التطبيق مجانًا ، يرجى مشاهدة هذا الإعلان للاستماع إلى هذا الكتاب. (انتظر بضع ثوان قبل الضغط على "حسنًا")      ',
       [
         {
-          text: 'Cancel',
+          text: 'يلغي',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         {
-          text: 'Okay',
-          onPress: async () => await AdMobRewarded.showAdAsync(),
+          text: 'تمام',
+          onPress: async () => {
+            await AdMobRewarded.showAdAsync(), setIsLoading(!isLoading);
+          },
           style: 'default',
         },
       ]
     );
     // Sets a requestAdAsync() before they pressing "Okay"
 
-      setIsLoading(!isLoading);
     // Shows the ReadyAlert message after the await on the requestAdAsync()
 
-  
     // Listen for ad events
     AdMobRewarded.addEventListener('rewardedVideoUserDidEarnReward', () => {
       console.log('User rewarded');
@@ -126,28 +136,31 @@ const BookViewScreen = (props, navigation) => {
   };
   return (
     <Container style={{ backgroundColor: PRIMARY_BACKGROUND_COLOR }}>
-      <Header transparent iosBarStyle={'light-content'}>
+      <Header
+        transparent
+        iosBarStyle={'light-content'}
+        androidStatusBarColor={'green'}
+      >
         <Left>
-        <Button transparent onPress={() => props.navigation.pop()}>
+          <Button transparent onPress={toggleFavoriteHandler}>
             <Icon
-              name="arrow-back"
+              name={currentBookIsFavorite ? 'ios-star' : 'ios-star-outline'}
               style={{
-                
-                fontSize: 30,
+                marginRight: 5,
+                fontSize: 22,
                 color: PRIMARY_FONT_COLOR,
               }}
             />
-            <Text style={{ color: PRIMARY_FONT_COLOR }}>Book Detail</Text>
           </Button>
         </Left>
-
         <Right>
-          <Button transparent onPress={toggleFavoriteHandler}>
+          <Button transparent onPress={() => props.navigation.pop()}>
+            <Text style={{ color: PRIMARY_FONT_COLOR }}>تفاصيل الكتاب</Text>
             <Icon
-              name="ios-star-outline"
+              name="arrow-forward"
               style={{
+                fontSize: 30,
                 marginLeft: 5,
-                fontSize: 22,
                 color: PRIMARY_FONT_COLOR,
               }}
             />
@@ -182,12 +195,13 @@ const BookViewScreen = (props, navigation) => {
             />
           </View>
 
-          <Text style={{ color: FADE_COLOR }}>{author}</Text>
+          <Text style={{ color: PRIMARY_FONT_COLOR }}>{author}</Text>
           <Text
             style={{
               fontSize: 26,
               marginVertical: 8,
               color: PRIMARY_FONT_COLOR,
+              textAlign: 'center',
             }}
           >
             {title}
@@ -195,32 +209,34 @@ const BookViewScreen = (props, navigation) => {
 
           <Button
             onPress={() => {
-              handlePlay();
+              handlePlay(bookId);
             }}
             style={{
+              flex: 1,
               overflow: 'hidden',
               backgroundColor: PRIMARY_COLOR,
-              paddingHorizontal: 36,
-              paddingVertical: 10,
+              paddingHorizontal: 47,
               marginVertical: 10,
               borderRadius: 30,
               alignSelf: 'center',
             }}
           >
-            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>PLAY</Text>
+            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>لعب</Text>
           </Button>
         </View>
 
         <View style={styles.infoRow}>
-          <Text style={{ color: PRIMARY_FONT_COLOR }}>Listening length</Text>
           <Text style={{ color: PRIMARY_FONT_COLOR }}>
             {Runtime ? Runtime : '-'}
           </Text>
+          <Text style={{ color: PRIMARY_FONT_COLOR }}>طول الاستماع</Text>
         </View>
 
         <View style={{ marginBottom: 30 }}>
-          <Text style={{ color: PRIMARY_FONT_COLOR }}>About the book</Text>
-          <Text style={{ color: FADE_COLOR, lineHeight: 20 }}>
+          <Text style={{ color: PRIMARY_FONT_COLOR }}>عن الكتاب</Text>
+          <Text
+            style={{ color: FADE_COLOR, lineHeight: 20, textAlign: 'center' }}
+          >
             {description.slice(0, description.lastIndexOf('.') + 1)}
           </Text>
         </View>
